@@ -46,13 +46,13 @@ public class JavaTasks {
         try (FileReader reader = new FileReader(inputName); FileWriter writer = new FileWriter(outputName)) {
             Scanner scanner = new Scanner(reader);
             List<Integer> list = new ArrayList<>();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss dd");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss aa");
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 try {
-
                     list.add((int)simpleDateFormat.parse(line).getTime());
                 } catch (ParseException e) {
+                    e.printStackTrace();
                     throw new NotImplementedError();
                 }
             }
