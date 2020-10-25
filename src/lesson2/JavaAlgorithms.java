@@ -3,6 +3,11 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
     /**
@@ -11,6 +16,55 @@ public class JavaAlgorithms {
      *
      * Во входном файле с именем inputName перечислены цены на акции компании в различные (возрастающие) моменты времени
      * (каждая цена идёт с новой строки). Цена -- это целое положительное число. Пример:
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
      *
      * 201
      * 196
@@ -29,8 +83,29 @@ public class JavaAlgorithms {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) {
-        throw new NotImplementedError();
+    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws IOException {
+        List<Integer> list = new ArrayList<>();
+        int max = -1;
+        int first, second;
+        Pair<Integer, Integer> result = new Pair<>(0,0);
+
+        FileInputStream inputStream = new FileInputStream(inputName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String string;
+
+        while((string = reader.readLine()) != null) {
+            list.add(Integer.parseInt(string));
+        }
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = i + 1; j < list.size(); j++) {
+                if (list.get(i) - list.get(j) > max) {
+                    max = list.get(i) - list.get(j);
+                    result = new Pair<>(i, j);
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -40,7 +115,7 @@ public class JavaAlgorithms {
      * Образовав круг, стоят menNumber человек, пронумерованных от 1 до menNumber.
      *
      * 1 2 3
-     * 8   4
+     *  8   4
      * 7 6 5
      *
      * Мы считаем от 1 до choiceInterval (например, до 5), начиная с 1-го человека по кругу.
@@ -98,7 +173,31 @@ public class JavaAlgorithms {
      * вернуть ту из них, которая встречается раньше в строке first.
      */
     static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+        boolean isEqual;
+        int maxLength = 0;
+        int start = 0;
+        for (int i = 0; i < firs.length(); i++){
+            for(int j = 0; j < second.length(); j++){
+                if (firs.charAt(i) == second.charAt(j)){
+                    isEqual = true;
+                    int currentMaxLength = 1;
+                    int k = 1;
+                    while (isEqual) {
+                        if (i + k < firs.length() && j + k < second.length()) {
+                            if (firs.charAt(i + k) == second.charAt(j + k)) {
+                                currentMaxLength++;
+                                k++;
+                            } else isEqual = false;
+                        } else break;
+                    }
+                    if (currentMaxLength > maxLength) {
+                        maxLength = currentMaxLength;
+                        start = i;
+                    }
+                }
+            }
+        }
+        return firs.substring(start, start + maxLength);
     }
 
     /**
@@ -112,6 +211,17 @@ public class JavaAlgorithms {
      * Единица простым числом не считается.
      */
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        if (limit <= 1) return 0;
+        if (limit == 2) return 1;
+        int[] array = new int[limit];
+        for (int i = 2; i < limit; i++) array[i] = 1;
+        for (int i = 2; i < limit; i++) {
+            if (array[i] != 0) {
+                for (int j = 2 * i; j < limit; j += i) {
+                    array[j] = 0;
+                }
+            }
+        }
+        return Arrays.stream(array).sum();
     }
 }

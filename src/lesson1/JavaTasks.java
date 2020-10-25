@@ -2,6 +2,14 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -34,8 +42,27 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTimes(String inputName, String outputName){
+        try (FileReader reader = new FileReader(inputName); FileWriter writer = new FileWriter(outputName)) {
+            Scanner scanner = new Scanner(reader);
+            List<Integer> list = new ArrayList<>();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss dd");
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                try {
+
+                    list.add((int)simpleDateFormat.parse(line).getTime());
+                } catch (ParseException e) {
+                    throw new NotImplementedError();
+                }
+            }
+            StringBuilder str = new StringBuilder();
+            list.stream().sorted().forEach(value -> str.append(simpleDateFormat.format(new Date(value))).append("\n"));
+            writer.write(str.toString());
+        } catch (IOException e) {
+            throw new NotImplementedError();
+        }
+
     }
 
     /**
@@ -57,7 +84,6 @@ public class JavaTasks {
      * Вывести записи в выходной файл outputName,
      * упорядоченными по названию улицы (по алфавиту) и номеру дома (по возрастанию).
      * Людей, живущих в одном доме, выводить через запятую по алфавиту (вначале по фамилии, потом по имени). Пример:
-     *
      * Железнодорожная 3 - Петров Иван
      * Железнодорожная 7 - Иванов Алексей, Иванов Михаил
      * Садовая 5 - Сидоров Петр, Сидорова Мария
@@ -65,8 +91,41 @@ public class JavaTasks {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortAddresses(String inputName, String outputName) {
-        throw new NotImplementedError();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputName, StandardCharsets.UTF_8));
+             FileWriter fileWriter = new FileWriter(new File(outputName), StandardCharsets.UTF_8)) {
+            String line;
+            Map<String, TreeSet<String>> addressAndPeople = new TreeMap<>(((o1, o2) -> {
+                 String[] current = o1.split(" ");
+                 String[] next = o2.split(" ");
+                if (current[0].compareTo(next[0]) == 0) {
+                    return Integer.compare(Integer.parseInt(current[1]), Integer.parseInt(next[1]));
+                } else return current[0].compareTo(next[0]);
+            })
+            );
+
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] addressLine = line.split(" - ");
+                if (!addressAndPeople.containsKey(addressLine[1])) addressAndPeople.put(addressLine[1], new TreeSet<>());
+                addressAndPeople.get(addressLine[1]).add(addressLine[0]);
+            }
+            StringBuilder str = new StringBuilder();
+            addressAndPeople.forEach((key, value) -> str.append(key)
+                    .append(" - ")
+                    .append(String.join(", ", value))
+                    .append("\n"));
+            fileWriter.write(String.valueOf(str));
+        } catch (IOException e) {
+            throw new NotImplementedError();
+        }
+
+
+
     }
+
+
+
+
+
 
     /**
      * Сортировка температур
@@ -99,9 +158,24 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputName, StandardCharsets.UTF_8));
+             FileWriter fileWriter = new FileWriter(new File(outputName), StandardCharsets.UTF_8)) {
+            List<Integer> list = new ArrayList<>();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                list.add(Integer.parseInt(line.replace(".", "")));
+            }
+            StringBuilder string = new StringBuilder();
+            list.stream().sorted().forEach(s -> string.append(s < 0 && Math.abs(s) < 10 ? ("-" + s / 10) : s / 10)
+                    .append(".")
+                    .append(s > 0 ? s % 10 : -s % 10)
+                    .append("\n"));
+            fileWriter.write(String.valueOf(string));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new NotImplementedError();
+        }
     }
-
     /**
      * Сортировка последовательности
      *

@@ -12,6 +12,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         final T value;
         Node<T> left = null;
         Node<T> right = null;
+        Node<T> parent = null;
 
         Node(T value) {
             this.value = value;
@@ -79,10 +80,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         else if (comparison < 0) {
             assert closest.left == null;
             closest.left = newNode;
+            newNode.parent = closest;
         }
         else {
             assert closest.right == null;
             closest.right = newNode;
+            newNode.parent = closest;
         }
         size++;
         return true;
@@ -101,8 +104,36 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      */
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        T t = (T) o;
+        Node<T> closest = find(t);
+        if (closest == null) return false;
+        if (closest.value != o) return false;
+
+        if (closest.left == null) exchange(closest, closest.right);
+        if (closest.right == null) exchange(closest, closest.left);
+            else {
+                Node<T> swapNode = closest.right;
+                while (swapNode.left != null) swapNode = swapNode.left;
+                if (swapNode.parent != closest){
+                    exchange(swapNode, swapNode.right);
+                    swapNode.right = closest.right;
+                    swapNode.right.parent = swapNode;
+                }
+                exchange(closest, swapNode);
+                swapNode.left = closest.left;
+                swapNode.left.parent = swapNode;
+            }
+        size--;
+            return true;
+    }
+
+    private void exchange(Node<T> nodeA, Node<T> nodeB) {
+        if (nodeA.parent == null) root = nodeB;
+        else
+            if (nodeA == nodeA.parent.right) nodeA.parent.right = nodeB;
+            else
+                if (nodeA == nodeA.parent.left) nodeA.parent.left = nodeB;
+        if (nodeB != null) nodeA.parent = nodeB.parent;
     }
 
     @Nullable
