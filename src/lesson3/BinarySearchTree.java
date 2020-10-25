@@ -114,14 +114,14 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
             else {
                 Node<T> swapNode = closest.right;
                 while (swapNode.left != null) swapNode = swapNode.left;
-                if (swapNode.parent != closest){
+                if (swapNode.parent != closest && swapNode.right != null){
                     exchange(swapNode, swapNode.right);
-                    swapNode.right = closest.right;
-                    swapNode.right.parent = swapNode;
+                    //swapNode.right = closest.right;
+                    //swapNode.right.parent = swapNode;
                 }
                 exchange(closest, swapNode);
-                swapNode.left = closest.left;
-                swapNode.left.parent = swapNode;
+                //swapNode.left = closest.left;
+                //swapNode.left.parent = swapNode;
             }
         size--;
             return true;
