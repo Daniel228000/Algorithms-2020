@@ -105,37 +105,34 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @Override
     public boolean remove(Object o) {
         T t = (T) o;
-        Node<T> closest = find(t);
-        if (closest == null) return false;
-        if (closest.value != o) return false;
-
-        if (closest.left == null) exchange(closest, closest.right);
-        if (closest.right == null) exchange(closest, closest.left);
-            else {
-                Node<T> swapNode = closest.right;
-                while (swapNode.left != null) swapNode = swapNode.left;
-                if (swapNode.parent != closest){
-                    exchange(swapNode, swapNode.right);
-                    swapNode.right = closest.right;
-                    swapNode.right.parent = swapNode;
-                }
-                exchange(closest, swapNode);
-                swapNode.left = closest.left;
-                assert swapNode.left != null;
-                swapNode.left.parent = swapNode;
+        Node<T> current = find(t);
+        if (current == null) return false;
+        if (current.value != t) return false;
+        if (current.left == null) changeParentSuccessor(current, current.right, true);
+        if (current.right == null) changeParentSuccessor(current, current.left, true);
+        if(current.right != null && current.left != null) {
+            Node<T> successor = current.right;
+            while (successor.left != null) successor = successor.left;
+            if (successor != current.right) {
+                successor.parent.left = successor.right;
+                successor.right = current.right;
             }
+            changeParentSuccessor(current, successor, false);
+        }
         size--;
-            return true;
+        return true;
     }
 
-    private void exchange(Node<T> nodeA, Node<T> nodeB) {
-        if (nodeA.parent == null) root = nodeB;
+    private void changeParentSuccessor(Node<T> current, @Nullable Node<T> successor, boolean hasOneChild){
+        if (current.parent == null) root = successor;
         else
-            if (nodeA == nodeA.parent.right) nodeA.parent.right = nodeB;
-            else
-                if (nodeA == nodeA.parent.left) nodeA.parent.left = nodeB;
-        if (nodeB != null) nodeA.parent = nodeB.parent;
+        if (current == current.parent.right) current.parent.right = successor;
+        else
+        if (current == current.parent.left) current.parent.left = successor;
+        if (!hasOneChild && current.left != null && successor != null) successor.left = current.left;
+        //if (successor!= null) successor.parent = current.parent;
     }
+
 
     @Nullable
     @Override
