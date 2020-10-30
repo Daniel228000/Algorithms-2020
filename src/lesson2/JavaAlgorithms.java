@@ -83,29 +83,8 @@ public class JavaAlgorithms {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws IOException {
-        List<Integer> list = new ArrayList<>();
-        int max = -1;
-        int first, second;
-        Pair<Integer, Integer> result = new Pair<>(0,0);
-
-        FileInputStream inputStream = new FileInputStream(inputName);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String string;
-
-        while((string = reader.readLine()) != null) {
-            list.add(Integer.parseInt(string));
-        }
-        for (int i = 0; i < list.size() - 1; i++) {
-            for (int j = i + 1; j < list.size(); j++) {
-                if (list.get(i) - list.get(j) > max) {
-                    max = list.get(i) - list.get(j);
-                    result = new Pair<>(i, j);
-                }
-            }
-        }
-
-        return result;
+    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName)  {
+        throw new NotImplementedError();
     }
 
     /**
@@ -194,7 +173,10 @@ public class JavaAlgorithms {
                         maxLength = currentMaxLength;
                         start = i;
                     }
+                    i+=k-1;
+                    j+=k-1;
                 }
+
             }
         }
         return firs.substring(start, start + maxLength);

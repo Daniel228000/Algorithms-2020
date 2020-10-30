@@ -53,14 +53,14 @@ public class JavaTasks {
                     list.add((int)simpleDateFormat.parse(line).getTime());
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    throw new NotImplementedError();
+                    throw new ParseException("Bad data format", e.getErrorOffset());
                 }
             }
             StringBuilder str = new StringBuilder();
             list.stream().sorted().forEach(value -> str.append(simpleDateFormat.format(new Date(value))).append("\n"));
             writer.write(str.toString());
-        } catch (IOException e) {
-            throw new NotImplementedError();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
         }
 
     }
@@ -160,16 +160,18 @@ public class JavaTasks {
     static public void sortTemperatures(String inputName, String outputName) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputName, StandardCharsets.UTF_8));
              FileWriter fileWriter = new FileWriter(new File(outputName), StandardCharsets.UTF_8)) {
-            List<Integer> list = new ArrayList<>();
+            List<Double> list = new ArrayList<>();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                list.add(Integer.parseInt(line.replace(".", "")));
+                list.add(Double.parseDouble(line));
+                //list.add(Integer.parseInt(line.replace(".", "")));
             }
             StringBuilder string = new StringBuilder();
-            list.stream().sorted().forEach(s -> string.append(s < 0 && Math.abs(s) < 10 ? ("-" + s / 10) : s / 10)
-                    .append(".")
-                    .append(s > 0 ? s % 10 : -s % 10)
-                    .append("\n"));
+            list.stream().sorted().forEach(s -> string.append(s).append("\n"));
+            //list.stream().sorted().forEach(s -> string.append(s < 0 && Math.abs(s) < 10 ? ("-" + s / 10) : s / 10)
+            //       .append(".")
+            //       .append(s > 0 ? s % 10 : -s % 10)
+            //       .append("\n"));
             fileWriter.write(String.valueOf(string));
         } catch (IOException e) {
             e.printStackTrace();
