@@ -214,7 +214,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @Override
         public void remove() {
            if (lastCallNext == null) throw new IllegalStateException();
-           BinarySearchTree.this.remove(next());
+           BinarySearchTree.this.remove(lastCallNext.value);
            lastCallNext = null; //check call of next() every time we call remove()
         }
     }
