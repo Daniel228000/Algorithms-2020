@@ -108,7 +108,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     public boolean remove(Object o) {
         T t = (T) o;
         Node<T> current = find(t);
-        if (current == null || current.value != t) return false;
+        if (remover(t, current)) return false;
+        return true;
+    }
+
+    private boolean remover(T t, Node<T> current) {
+        if (current == null || current.value != t) return true;
         if (current.left == null) changeParentSuccessor(current, current.right, true);
         if (current.right == null) changeParentSuccessor(current, current.left, true);
         if(current.right != null && current.left != null) {
@@ -119,9 +124,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 successor.right = current.right;
             }
             changeParentSuccessor(current, successor, false);
+
         }
         size--;
-        return true;
+        return false;
     }
 
     private void changeParentSuccessor(Node<T> current, @Nullable Node<T> successor, boolean hasOneChild){
@@ -214,7 +220,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @Override
         public void remove() {
            if (lastCallNext == null) throw new IllegalStateException();
-           BinarySearchTree.this.remove(lastCallNext.value);
+           remover(lastCallNext.value, lastCallNext);
            lastCallNext = null; //check call of next() every time we call remove()
         }
     }
