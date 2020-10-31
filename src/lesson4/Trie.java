@@ -84,16 +84,52 @@ public class Trie extends AbstractSet<String> implements Set<String> {
 
     /**
      * Итератор для префиксного дерева
-     *
+     * <p>
      * Спецификация: {@link Iterator} (Ctrl+Click по Iterator)
-     *
+     * <p>
      * Сложная
      */
     @NotNull
     @Override
     public Iterator<String> iterator() {
-        // TODO
-        throw new NotImplementedError();
+        return new TrieIterator();
     }
 
+    public class TrieIterator implements Iterator<String> {
+        ArrayDeque<String> deque = new ArrayDeque<>();
+        String lastCallNext = null;
+
+        public TrieIterator() {
+            if (root == null) return;
+            find(root, "");
+        }
+
+        private void find(Node node, String word) {
+            if (!node.children.isEmpty()) {
+                for (Map.Entry<Character, Node> current : node.children.entrySet()) {
+                    if (current.getKey() != (char) 0) find(current.getValue(), word + current.getKey());
+                    else deque.add(word);
+                }
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !deque.isEmpty();
+        }
+
+        @Override
+        public String next() {
+            if(!hasNext()) throw new IllegalStateException();
+            lastCallNext = deque.pop();
+            return lastCallNext;
+        }
+
+        @Override
+        public void remove() {
+            if (lastCallNext == null) throw new IllegalStateException();
+            Trie.this.remove(lastCallNext);
+            lastCallNext = null;
+        }
+    }
 }
