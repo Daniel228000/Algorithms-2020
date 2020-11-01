@@ -164,7 +164,9 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         //@Override
         //public void remove() {
         //    if (currentIndex != -1 && storage[currentIndex] != null){
-        //
+        //        storage[currentIndex] = null;
+        //        size--;
+        //        currentIndex--;
         //    }
         //}
     }
