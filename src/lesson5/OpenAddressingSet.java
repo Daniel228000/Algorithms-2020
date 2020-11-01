@@ -4,8 +4,10 @@ import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class OpenAddressingSet<T> extends AbstractSet<T> {
 
@@ -17,8 +19,10 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
 
     private int size = 0;
 
+    private boolean[] flags;
+
     private int startingIndex(Object element) {
-        return element.hashCode() & (0x7FFFFFFF >> (31 - bits));
+         return element.hashCode() & (0x7FFFFFFF >> (31 - bits));
     }
 
     public OpenAddressingSet(int bits) {
@@ -28,6 +32,8 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         this.bits = bits;
         capacity = 1 << bits;
         storage = new Object[capacity];
+        flags = new boolean[capacity];
+        Arrays.fill(flags, false);
     }
 
     @Override
@@ -40,16 +46,25 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean contains(Object o) {
+        //if (o == null) return false;
+        System.out.println("TARARARARRA");
         int index = startingIndex(o);
         Object current = storage[index];
-        while (current != null) {
-            if (current.equals(o)) {
-                return true;
+        while (current != null || flags[index]) {
+            if (current != null) {
+                if (current.equals(o)) {
+                    return true;
+                    }
+                }
+                //if (flags[index] && current == null) {
+                //    index = (index + 1) % capacity;
+                //    current = storage[index];
+                //    continue;
+                //}
+                index = (index + 1) % capacity;
+                current = storage[index];
             }
-            index = (index + 1) % capacity;
-            current = storage[index];
-        }
-        return false;
+            return false;
     }
 
     /**
@@ -64,22 +79,42 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean add(T t) {
+        if (t == null) return false;
         int startingIndex = startingIndex(t);
         int index = startingIndex;
         Object current = storage[index];
-        while (current != null) {
-            if (current.equals(t)) {
-                return false;
+        if (current == null || contains(current)) return false;
+        while (current != null || flags[index]) {
+            if (current != null) {
+                index = (index + 1) % capacity;
+                if (index == startingIndex) {
+                    throw new IllegalStateException("Table is full");
+                }
+                current = storage[index];
+            } else {
+                if (flags[index]) flags[index] = false;
+                storage[index] = t;
+                size++;
+                return true;
             }
-            index = (index + 1) % capacity;
-            if (index == startingIndex) {
-                throw new IllegalStateException("Table is full");
-            }
-            current = storage[index];
         }
-        storage[index] = t;
-        size++;
-        return true;
+        return false;
+        //while (current != null || flags[index]) {
+        //    if (current != null) {
+        //        if (current.equals(t)) {
+        //            return false;
+        //        }
+        //    }
+        //    index = (index + 1) % capacity;
+        //    if (index == startingIndex) {
+        //        throw new IllegalStateException("Table is full");
+        //    }
+        //    current = storage[index];
+        //}
+        //if (flags[index]) flags[index] = false;
+        //storage[index] = t;
+        //size++;
+        //return true;
     }
 
     /**
@@ -95,8 +130,18 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean remove(Object o) {
-        return super.remove(o);
-    }
+        if (o == null) return false;
+        int index = startingIndex(o);
+        Object current = storage[index];
+        if (contains(current)) {
+            System.out.println("AHHAAHHAHAHA");
+            flags[index] = true;
+            storage[index] = null;
+            size--;
+            return true;
+        } else return false;
+        }
+
 
     /**
      * Создание итератора для обхода таблицы
