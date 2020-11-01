@@ -150,6 +150,9 @@ public class JavaAlgorithms {
      * При сравнении подстрок, регистр символов *имеет* значение.
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
+     *
+     * Трудоемкость(T): O(first.length * second.length)
+     * Ресурсоемкость(R): O(first.length * second.length)
      */
     static public String longestCommonSubstring(String firs, String second) {
         boolean isEqual;
@@ -191,6 +194,9 @@ public class JavaAlgorithms {
      *
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
+     *
+     * Трудоемкость(T): O( n * log(log(n)) )
+     * Ресурсоемкость(R): O(n)
      */
     static public int calcPrimesNumber(int limit) {
         if (limit <= 1) return 0;

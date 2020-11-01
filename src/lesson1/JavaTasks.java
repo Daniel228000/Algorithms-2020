@@ -41,6 +41,8 @@ public class JavaTasks {
      * 07:56:14 PM
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
+     * Трудоемкость(T): O(nlogn)
+     * Ресурсоемкость(R): O(n)
      */
     static public void sortTimes(String inputName, String outputName){
         try (FileReader reader = new FileReader(inputName); FileWriter writer = new FileWriter(outputName)) {
@@ -89,6 +91,8 @@ public class JavaTasks {
      * Садовая 5 - Сидоров Петр, Сидорова Мария
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
+     * Трудоемкость(T): O(nlogn)
+     * Ресурсоемкость(R): O(n)
      */
     static public void sortAddresses(String inputName, String outputName) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputName, StandardCharsets.UTF_8));
@@ -156,6 +160,8 @@ public class JavaTasks {
      * 24.7
      * 99.5
      * 121.3
+     * Трудоемкость(T): O(n + k)
+     * Ресурсоемкость(R): O(n)
      */
     static public void sortTemperatures(String inputName, String outputName) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputName, StandardCharsets.UTF_8));

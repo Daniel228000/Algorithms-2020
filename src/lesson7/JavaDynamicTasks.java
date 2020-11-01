@@ -18,7 +18,9 @@ public class JavaDynamicTasks {
      * Если общей подпоследовательности нет, вернуть пустую строку.
      * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
      * При сравнении подстрок, регистр символов *имеет* значение.
-     * Время - О(n*m), память - О(n*m), где n u m — длины строк.
+     * Трудоемкость(T): О(n * m)
+     * Ресурсоемкость(R): О(n * m)
+     * n, m — длины строк.
      */
     public static String longestCommonSubSequence(String first, String second) {
         int firstLen = first.length();
@@ -57,6 +59,8 @@ public class JavaDynamicTasks {
      * Если самых длинных возрастающих подпоследовательностей несколько (как в примере),
      * то вернуть ту, в которой числа расположены раньше (приоритет имеют первые числа).
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
+     * Трудоемкость(T): О(nlogn)
+     * Ресурсоемкость(R): О(n)
      */
     public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
         List<Integer> result = new ArrayList<>();
