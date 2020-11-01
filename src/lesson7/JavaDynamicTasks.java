@@ -2,6 +2,7 @@ package lesson7;
 
 import kotlin.NotImplementedError;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -58,7 +59,32 @@ public class JavaDynamicTasks {
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
      */
     public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
-        throw new NotImplementedError();
+        List<Integer> result = new ArrayList<>();
+        int[] a = new int[list.size()];
+        int[] b = new int[list.size() + 1];
+        int max = 0;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            int count = 1;
+            int c = max;
+            while (count <= c) {
+                int mid = (int) Math.ceil((count + c) / 2);
+                if (list.get(b[mid]) <= list.get(i)) {
+                    c = mid - 1;
+                } else {
+                    count = mid + 1;
+                }
+            }
+            int newMax = count;
+            a[i] = b[newMax - 1];
+            b[newMax] = i;
+            if (newMax > max) max = newMax;
+        }
+        int k = b[max];
+        for (int i = max - 1; i >= 0; i--) {
+            result.add(list.get(k));
+            k = a[k];
+        }
+        return  result;
     }
 
     /**
