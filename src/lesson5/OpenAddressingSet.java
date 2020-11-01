@@ -46,24 +46,15 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean contains(Object o) {
-        //if (o == null) return false;
-        System.out.println("TARARARARRA");
         int index = startingIndex(o);
         Object current = storage[index];
-        while (current != null || flags[index]) {
-            if (current != null) {
-                if (current.equals(o)) {
-                    return true;
-                    }
-                }
-                //if (flags[index] && current == null) {
-                //    index = (index + 1) % capacity;
-                //    current = storage[index];
-                //    continue;
-                //}
-                index = (index + 1) % capacity;
-                current = storage[index];
+        while (current != null) {
+            if (current.equals(o)) {
+                return true;
             }
+            index = (index + 1) % capacity;
+            current = storage[index];
+        }
             return false;
     }
 
@@ -83,38 +74,19 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         int startingIndex = startingIndex(t);
         int index = startingIndex;
         Object current = storage[index];
-        if (current == null || contains(current)) return false;
-        while (current != null || flags[index]) {
-            if (current != null) {
-                index = (index + 1) % capacity;
-                if (index == startingIndex) {
-                    throw new IllegalStateException("Table is full");
+        while (current != null) {
+                if (current.equals(t)) {
+                    return false;
                 }
-                current = storage[index];
-            } else {
-                if (flags[index]) flags[index] = false;
-                storage[index] = t;
-                size++;
-                return true;
+            index = (index + 1) % capacity;
+            if (index == startingIndex) {
+                throw new IllegalStateException("Table is full");
             }
+            current = storage[index];
         }
-        return false;
-        //while (current != null || flags[index]) {
-        //    if (current != null) {
-        //        if (current.equals(t)) {
-        //            return false;
-        //        }
-        //    }
-        //    index = (index + 1) % capacity;
-        //    if (index == startingIndex) {
-        //        throw new IllegalStateException("Table is full");
-        //    }
-        //    current = storage[index];
-        //}
-        //if (flags[index]) flags[index] = false;
-        //storage[index] = t;
-        //size++;
-        //return true;
+        storage[index] = t;
+        size++;
+        return true;
     }
 
     /**
@@ -130,16 +102,23 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean remove(Object o) {
-        if (o == null) return false;
-        int index = startingIndex(o);
+        int startIndex = startingIndex(o);
+        int index = startIndex;
         Object current = storage[index];
-        if (contains(current)) {
-            System.out.println("AHHAAHHAHAHA");
-            flags[index] = true;
-            storage[index] = null;
-            size--;
-            return true;
-        } else return false;
+        while(current != null){
+            int oldIndex = index;
+            index = (index + 1) % capacity;
+            Object newCurrent = storage[index];
+            if ( newCurrent != null){
+                storage[oldIndex] = newCurrent;
+                storage[index] = null;
+                size--;
+                return true;
+            }
+            current = storage[index];
+        }
+        storage[startIndex] = null;
+        return false;
         }
 
 
