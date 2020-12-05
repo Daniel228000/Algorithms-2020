@@ -99,13 +99,17 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
     public boolean remove(Object o) {
         if (!contains(o)) return false;
         int index = startingIndex(o);
+        int startingIndex = index;
         Object current = storage[index];
         while (current != null) {
             if (current.equals(o)) {
                 storage[index] = deletedElement;
                 break;
             }
-            index++;
+            index = (index + 1) % capacity;
+            if (index == startingIndex) {
+                return false;
+            }
             current = storage[index];
         }
         size--;

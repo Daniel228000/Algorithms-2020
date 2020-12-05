@@ -3,10 +3,7 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
@@ -154,35 +151,23 @@ public class JavaAlgorithms {
      * Трудоемкость(T): O(first.length * second.length)
      * Ресурсоемкость(R): O(first.length * second.length)
      */
-    static public String longestCommonSubstring(String firs, String second) {
-        boolean isEqual;
-        int maxLength = 0;
-        int start = 0;
-        for (int i = 0; i < firs.length(); i++){
-            for(int j = 0; j < second.length(); j++){
-                if (firs.charAt(i) == second.charAt(j)){
-                    isEqual = true;
-                    int currentMaxLength = 1;
-                    int k = 1;
-                    while (isEqual) {
-                        if (i + k < firs.length() && j + k < second.length()) {
-                            if (firs.charAt(i + k) == second.charAt(j + k)) {
-                                currentMaxLength++;
-                                k++;
-                            } else isEqual = false;
-                        } else break;
+    static public String longestCommonSubstring(String first, String second) {
+        if (first.isEmpty() || second.isEmpty()) return "";
+        int[][] matrix = new int[first.length() + 1][first.length() + 1];
+        int maxI = 0, maxLength = 0;
+        for (int i = 1; i <= first.length(); i++) {
+            for (int j = 1; j <= second.length(); j++) {
+                if (first.charAt(i - 1) == second.charAt(j - 1)) {
+                    int matrixElement = matrix[i - 1][j - 1] + 1;
+                    if (maxLength < matrixElement){
+                        maxLength = matrixElement;
+                        maxI = i;
                     }
-                    if (currentMaxLength > maxLength) {
-                        maxLength = currentMaxLength;
-                        start = i;
-                    }
-                    i+=k-1;
-                    j+=k-1;
+                    matrix[i][j] = matrixElement;
                 }
-
             }
         }
-        return firs.substring(start, start + maxLength);
+        return first.substring(maxI - maxLength, maxI);
     }
 
     /**
