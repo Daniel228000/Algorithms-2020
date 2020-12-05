@@ -127,9 +127,6 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         }
 
 
-
-
-
         fun testGeneratedTemperatures(size: Int): PerfResult<Unit> {
             try {
                 val res = generateTemperatures(size)
@@ -148,6 +145,7 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         }
 
         println("sortTemperatures: $perf")
+
     }
 
     private fun generateSequence(totalSize: Int, answerSize: Int): PerfResult<Unit> {

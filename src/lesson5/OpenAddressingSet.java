@@ -17,6 +17,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
     private int size = 0;
 
     private boolean[] flags;
+    private Object deletedElement = new Object();
 
     private int startingIndex(Object element) {
         return element.hashCode() & (0x7FFFFFFF >> (31 - bits));
@@ -29,8 +30,6 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         this.bits = bits;
         capacity = 1 << bits;
         storage = new Object[capacity];
-        flags = new boolean[capacity];
-        Arrays.fill(flags, false);
     }
 
     @Override
@@ -67,11 +66,10 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean add(T t) {
-        if (t == null) return false;
         int startingIndex = startingIndex(t);
         int index = startingIndex;
         Object current = storage[index];
-        while (current != null) {
+        while (current != null && current != deletedElement) {
             if (current.equals(t)) {
                 return false;
             }
@@ -99,26 +97,20 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean remove(Object o) {
-        int startIndex = startingIndex(o);
-        int index = startIndex;
+        if (!contains(o)) return false;
+        int index = startingIndex(o);
         Object current = storage[index];
         while (current != null) {
-            int oldIndex = index;
-            index = (index + 1) % capacity;
-            Object newCurrent = storage[index];
-            if (newCurrent != null) {
-                storage[oldIndex] = newCurrent;
-                storage[index] = null;
-                size--;
-                return true;
+            if (current.equals(o)) {
+                storage[index] = deletedElement;
+                break;
             }
+            index++;
             current = storage[index];
         }
-        storage[startIndex] = null;
-        return false;
+        size--;
+        return true;
     }
-
-
     /**
      * Создание итератора для обхода таблицы
      * <p>

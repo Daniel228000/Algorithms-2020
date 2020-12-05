@@ -5,6 +5,7 @@ import kotlin.NotImplementedError;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,8 +45,9 @@ public class JavaTasks {
      * Трудоемкость(T): O(nlogn)
      * Ресурсоемкость(R): O(n)
      */
-    static public void sortTimes(String inputName, String outputName){
-        try (FileReader reader = new FileReader(inputName); FileWriter writer = new FileWriter(outputName)) {
+    static public void sortTimes(String inputName, String outputName) {
+        try (FileReader reader = new FileReader(inputName);
+             FileWriter writer = new FileWriter(outputName)) {
             Scanner scanner = new Scanner(reader);
             List<Integer> list = new ArrayList<>();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss aa");
@@ -170,14 +172,10 @@ public class JavaTasks {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 list.add(Double.parseDouble(line));
-                //list.add(Integer.parseInt(line.replace(".", "")));
+
             }
             StringBuilder string = new StringBuilder();
             list.stream().sorted().forEach(s -> string.append(s).append("\n"));
-            //list.stream().sorted().forEach(s -> string.append(s < 0 && Math.abs(s) < 10 ? ("-" + s / 10) : s / 10)
-            //       .append(".")
-            //       .append(s > 0 ? s % 10 : -s % 10)
-            //       .append("\n"));
             fileWriter.write(String.valueOf(string));
         } catch (IOException e) {
             e.printStackTrace();
